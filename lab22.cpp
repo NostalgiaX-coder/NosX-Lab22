@@ -16,7 +16,7 @@ class ComplexNumber{
 		double angle();
 };
 
-ComplexNumber::ComplexNumber(double x = 0,double y = 0){
+ComplexNumber::ComplexNumber(double x = 0, double y = 0){
 	real = x; imag = y;
 }
 
@@ -28,50 +28,57 @@ ComplexNumber ComplexNumber::operator-(const ComplexNumber &c){
 	return ComplexNumber(real-c.real,imag-c.imag);
 }
 
-//Write your code here
+// --- New Code Starts Here ---
 
-int main(){
-	ComplexNumber a(1.5,2),b(3.2,-2.5),c(-1,1.2);	
-	cout << a << "\n";
-	cout << b << "\n";
-	cout << c << "\n";
-	cout << a+2.5 << "\n";
-	cout << 2.5+a << "\n";
-	cout << a-1.5 << "\n";
-	cout << 1.5-a << "\n";
-	cout << b+ComplexNumber(0,2.5) << "\n";
-	cout << c-c << "\n";
-	cout << "-----------------------------------\n";
-	
-	ComplexNumber d = (a+b)/c;
-	ComplexNumber e = b/(a-c);
-	cout << d << "\n";
-	cout << e << "\n";
-	cout << c*2 << "\n";
-	cout << 0.5*c << "\n";
-	cout << 1/c << "\n";
-	cout << "-----------------------------------\n";
-	
-	cout << ComplexNumber(1,1).abs() << "\n";
-	cout << ComplexNumber(-1,1).abs() << "\n";
-	cout << ComplexNumber(1.5,2.4).abs() << "\n";
-	cout << ComplexNumber(3,4).abs() << "\n";
-	cout << ComplexNumber(69,-9).abs() << "\n";		
-	cout << "-----------------------------------\n";	
-	
-	cout << ComplexNumber(1,1).angle() << "\n";
-	cout << ComplexNumber(-1,1).angle() << "\n";
-	cout << ComplexNumber(-1,-1).angle() << "\n";
-	cout << ComplexNumber(1,-1).angle() << "\n";
-	cout << ComplexNumber(5,2).angle() << "\n";
-	cout << "-----------------------------------\n";
-	
-	cout << (ComplexNumber(1,1) == ComplexNumber(1,2)) << "\n";
-	cout << (ComplexNumber(1,1) == 1) << "\n";
-	cout << (0 == ComplexNumber()) << "\n";
+ComplexNumber ComplexNumber::operator*(const ComplexNumber &c){
+    return ComplexNumber(real * c.real - imag * c.imag, real * c.imag + imag * c.real);
 }
 
+ComplexNumber ComplexNumber::operator/(const ComplexNumber &c){
+    double den = c.real * c.real + c.imag * c.imag;
+    return ComplexNumber((real * c.real + imag * c.imag) / den, (imag * c.real - real * c.imag) / den);
+}
 
+bool ComplexNumber::operator==(const ComplexNumber &c){
+    return (real == c.real && imag == c.imag);
+}
 
+double ComplexNumber::abs(){
+    return sqrt(real * real + imag * imag);
+}
 
+double ComplexNumber::angle(){
+    return atan2(imag, real) * 180.0 / M_PI;
+}
 
+// Handling 'double op ComplexNumber' (Left-hand side is double)
+ComplexNumber operator+(double s, const ComplexNumber &c){
+    return ComplexNumber(s + c.real, c.imag);
+}
+
+ComplexNumber operator-(double s, const ComplexNumber &c){
+    return ComplexNumber(s - c.real, -c.imag);
+}
+
+ComplexNumber operator*(double s, const ComplexNumber &c){
+    return ComplexNumber(s * c.real, s * c.imag);
+}
+
+ComplexNumber operator/(double s, const ComplexNumber &c){
+    return ComplexNumber(s, 0) / c;
+}
+
+bool operator==(double s, const ComplexNumber &c){
+    return (s == c.real && c.imag == 0);
+}
+
+// Formatting for cout << ComplexNumber
+ostream& operator<<(ostream &os, const ComplexNumber &c){
+    if(c.real == 0 && c.imag == 0) return os << "0";
+    if(c.real == 0) return os << c.imag << "i";
+    if(c.imag == 0) return os << c.real;
+    
+    os << c.real;
+    if(c.imag > 0) os << "+";
+    return os << c.imag << "i";
+}
